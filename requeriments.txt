@@ -1,4 +1,0 @@
-opencv-python
-SpeechRecognition
-pipwin
-pyaudio
