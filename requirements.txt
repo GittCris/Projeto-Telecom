@@ -1,5 +1,5 @@
-opencv-python
 SpeechRecognition
 pipwin
 pyaudio
 tkinter
+deepmultilingualpunctuation
