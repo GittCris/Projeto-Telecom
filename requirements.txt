@@ -1,5 +1,4 @@
 SpeechRecognition
-pipwin
 pyaudio
-tkinter
+Pillow
 deepmultilingualpunctuation
