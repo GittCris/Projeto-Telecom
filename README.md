@@ -57,6 +57,8 @@ python main.py
 └── requirements.txt       # Dependências Python
 ```
 
+**Nota:** Os GIFs não estão incluídos no repositório devido ao tamanho e ao limite de armazenamento do GitHub.
+
 ## Arquitetura
 
 1. **Captura:** Microfone -> áudio
