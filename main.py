@@ -24,9 +24,9 @@ def reduzir_verbos_regulares(palavra):
     Tenta reduzir uma conjugação regular à forma infinitiva.
     Funciona para verbos terminados em ar, er, ir e suas formas regulares.
     """
-    sufixos = ["aria", "arias", "aria", "aríamos", "aríeis", "ariam",
-               "eria", "erias", "eria", "eríamos", "eríeis", "eriam",
-               "iria", "irias", "iria", "iríamos", "iríeis", "iriam",
+    sufixos = ["aria", "arias", "aria", "ariamos", "arieis", "ariam",
+               "eria", "erias", "eria", "eriamos", "erieis", "eriam",
+               "iria", "irias", "iria", "iriamos", "irieis", "iriam",
                "ei", "aste", "ou", "amos", "astes", "aram",
                "i", "iste", "iu", "imos", "istes", "iram",
                "arei", "aras", "ara", "aremos", "areis", "arao",
@@ -35,7 +35,7 @@ def reduzir_verbos_regulares(palavra):
                "o", "as", "a", "amos", "ais", "am",
                "o", "es", "e", "emos", "eis", "em",
                "o", "es", "e", "imos", "is", "em",
-               "ia", "ias", "ia", "íamos", "íeis", "iam"]
+               "ia", "ias", "ia", "iamos", "ieis", "iam"]
     
     for suf in sorted(sufixos, key=len, reverse=True):
         if palavra.endswith(suf):
