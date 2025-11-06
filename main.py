@@ -17,6 +17,64 @@ model = PunctuationModel() # Modelo para pontuação automática
 with open("dicionario.json", "r", encoding="utf-8") as f:
     dicionario_libras = json.load(f)
 
+
+
+def reduzir_verbos_regulares(palavra):
+    """
+    Tenta reduzir uma conjugação regular à forma infinitiva.
+    Funciona para verbos terminados em ar, er, ir e suas formas regulares.
+    """
+    sufixos = ["aria", "arias", "aria", "aríamos", "aríeis", "ariam",
+               "eria", "erias", "eria", "eríamos", "eríeis", "eriam",
+               "iria", "irias", "iria", "iríamos", "iríeis", "iriam",
+               "ei", "aste", "ou", "amos", "astes", "aram",
+               "i", "iste", "iu", "imos", "istes", "iram",
+               "arei", "aras", "ara", "aremos", "areis", "arao",
+               "erei", "eras", "era", "eremos", "ereis", "erao",
+               "irei", "iras", "ira", "iremos", "ireis", "irao",
+               "o", "as", "a", "amos", "ais", "am",
+               "o", "es", "e", "emos", "eis", "em",
+               "o", "es", "e", "imos", "is", "em",
+               "ia", "ias", "ia", "íamos", "íeis", "iam"]
+    
+    for suf in sorted(sufixos, key=len, reverse=True):
+        if palavra.endswith(suf):
+            raiz = palavra[:-len(suf)]
+            # Tenta reconstruir infinitivo
+            for term in ["ar", "er", "ir"]:
+                possivel = raiz + term
+                yield possivel
+
+# Função para pegar valor do dicionário
+def encontrar_valor(dicionario, palavra):
+    """
+    Retorna o valor do dicionário correspondente à palavra ou à raiz do verbo regular.
+    Ignora palavras irrelevantes (preposições, artigos, etc.).
+    """
+
+    # Conjunto de palavras irrelevantes para ignorar (mais eficiente que lista)
+    ignorar = {"a", "e", "o", "de", "do", "da", "em", "uma", "para", "com", "por", "no", "na"}
+
+    palavra_lower = palavra.lower()
+    
+    # Ignora palavras irrelevantes
+    if palavra_lower in ignorar or not palavra_lower.strip():
+        return None
+
+    # Verifica se a palavra está diretamente no dicionário
+    if palavra_lower in dicionario:
+        return dicionario[palavra_lower]
+    
+    # Tenta reduzir a palavra à raiz de verbos regulares
+    for possivel_verbo in reduzir_verbos_regulares(palavra_lower):
+        if possivel_verbo in dicionario:
+            return dicionario[possivel_verbo]
+    
+    # Nenhuma correspondência encontrada
+    return None
+
+    
+
 # --- Variáveis globais ---
 captando = False
 thread_rec = None
@@ -126,8 +184,8 @@ def mostrar_sinais(texto, texto_completo):
 
     # Exibe GIFs ou mensagens para cada palavra detectada
     for palavra in palavras_exibidas:
-        if palavra in dicionario_libras:
-            img_path = dicionario_libras[palavra]
+        img_path = encontrar_valor(dicionario_libras, palavra)
+        if img_path != None:
             if os.path.exists(img_path):
                 try:
                     pil_img = Image.open(img_path)
@@ -147,10 +205,10 @@ def mostrar_sinais(texto, texto_completo):
             else:
                 tk.Label(frame_inner, text=f"[arquivo não encontrado: {palavra}]").pack(side="left")
         else:
-            tk.Label(frame_inner, 
-         text=f"[{palavra}]", 
-         font=("Arial", 20, "bold")).pack(side="left")
-
+            if palavra.lower() not in ["a", "e", "o", "de", "do", "da", "em", "uma", "para", "com", "por", "no", "na"]:
+                tk.Label(frame_inner, 
+            text=f"[{palavra}]", 
+            font=("Arial", 20, "bold")).pack(side="left")
 
     # Atualiza o texto reconhecido
     lbl_texto.config(text=texto_completo)
