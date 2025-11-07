@@ -19,31 +19,63 @@ with open("dicionario.json", "r", encoding="utf-8") as f:
 
 
 
-def reduzir_verbos_regulares(palavra):
+# Dicionário de verbos irregulares que mudam a raiz
+irregulares = {
+    # TER
+    "tenho": "ter", "tem": "ter", "têm": "ter", "tinha": "ter", "tivemos": "ter", "tiveram": "ter", "tive": "ter", "teve": "ter",
+    # SER
+    "sou": "ser", "és": "ser", "é": "ser", "são": "ser", "fui": "ser", "foi": "ser", "fomos": "ser", "foram": "ser",
+    # IR
+    "vou": "ir", "vais": "ir", "vai": "ir", "vamos": "ir", "vão": "ir", "fui": "ir", "foi": "ir", "foram": "ir",
+    # VIR
+    "venho": "vir", "vem": "vir", "vêm": "vir", "viemos": "vir", "vieram": "vir",
+    # ESTAR
+    "estou": "estar", "está": "estar", "estão": "estar", "estivemos": "estar", "esteve": "estar",
+    # FAZER
+    "faço": "fazer", "faz": "fazer", "fazem": "fazer", "fiz": "fazer", "fez": "fazer", "fizeram": "fazer",
+    # DIZER
+    "digo": "dizer", "diz": "dizer", "disse": "dizer", "disseram": "dizer",
+    # PODER
+    "posso": "poder", "pode": "poder", "pudemos": "poder", "pude": "poder", "pôde": "poder", "puderam": "poder",
+    # SABER
+    "sei": "saber", "sabe": "saber", "soube": "saber", "souberam": "saber",
+    # VER
+    "vejo": "ver", "vê": "ver", "vemos": "ver", "viram": "ver",
+    # CABER
+    "caibo": "caber", "cabe": "caber", "cabem": "caber", "coube": "caber",
+    # TRAZER
+    "trago": "trazer", "traz": "trazer", "trouxemos": "trazer", "trouxe": "trazer", "trouxeram": "trazer",
+    # PÔR
+}
+
+def reduzir_verbos(palavra):
     """
-    Tenta reduzir uma conjugação regular à forma infinitiva.
-    Funciona para verbos terminados em ar, er, ir e suas formas regulares.
+    Reduz verbos regulares e irregulares à forma infinitiva.
     """
-    sufixos = ["aria", "arias", "aria", "ariamos", "arieis", "ariam",
-               "eria", "erias", "eria", "eriamos", "erieis", "eriam",
-               "iria", "irias", "iria", "iriamos", "irieis", "iriam",
-               "ei", "aste", "ou", "amos", "astes", "aram",
+    # Primeiro, checa se é um verbo irregular
+    if palavra in irregulares:
+        yield irregulares[palavra]
+        return
+    
+    # Lista de sufixos para verbos regulares
+    sufixos = ["arias", "aria", "ariamos", "arieis", "ariam",
+               "eria", "erias", "eriamos", "erieis", "eriam",
+               "iria", "irias", "iriamos", "irieis", "iriam",
+               "ei", "aste", "ou", "astes", "aram",
                "i", "iste", "iu", "imos", "istes", "iram",
                "arei", "aras", "ara", "aremos", "areis", "arao",
                "erei", "eras", "era", "eremos", "ereis", "erao",
                "irei", "iras", "ira", "iremos", "ireis", "irao",
                "o", "as", "a", "amos", "ais", "am",
-               "o", "es", "e", "emos", "eis", "em",
-               "o", "es", "e", "imos", "is", "em",
-               "ia", "ias", "ia", "iamos", "ieis", "iam"]
+                "es", "e", "emos", "eis", "em", "is",
+               "ram", "eram","avam","ia", "ias", "iamos", "ieis", "iam"]
     
-    for suf in sorted(sufixos, key=len, reverse=True):
+    # Tenta reduzir palavra com sufixos regulares
+    for suf in sorted(sufixos, key=len):
         if palavra.endswith(suf):
             raiz = palavra[:-len(suf)]
-            # Tenta reconstruir infinitivo
             for term in ["ar", "er", "ir"]:
-                possivel = raiz + term
-                yield possivel
+                yield raiz + term
 
 # Função para pegar valor do dicionário
 def encontrar_valor(dicionario, palavra):
@@ -66,7 +98,7 @@ def encontrar_valor(dicionario, palavra):
         return dicionario[palavra_lower]
     
     # Tenta reduzir a palavra à raiz de verbos regulares
-    for possivel_verbo in reduzir_verbos_regulares(palavra_lower):
+    for possivel_verbo in reduzir_verbos(palavra_lower):
         if possivel_verbo in dicionario:
             return dicionario[possivel_verbo]
     
